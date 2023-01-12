@@ -1,0 +1,37 @@
+version: "3.3"
+
+networks:
+  default:
+    external:
+      name: poc-stack
+
+services:
+  zookeeper:
+    image: zookeeper:3.4.13
+    hostname: zookeeper
+    ports:
+      - "127.0.0.1:2181:2181"
+    restart: always
+    environment:
+      - ZOO_MY_ID=1
+      - ZOO_SERVERS="server.1=0.0.0.0:2888:3888"
+      - JMX_PORT=9999
+
+  kafka:
+    image : wurstmeister/kafka:2.13-2.7.0
+    hostname: kafka
+    ports:
+      - "127.0.0.1:9092:9092"
+    expose:
+      - "9092"
+      - "9093"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=20971520
+      - KAFKA_MESSAGE_MAX_BYTES=20971520
+      - KAFKA_MAX_REQUEST_SIZE=20971520
+    depends_on:
+      - zookeeper

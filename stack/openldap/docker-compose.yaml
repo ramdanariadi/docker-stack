@@ -1,0 +1,22 @@
+version: "3.3"
+
+networks:
+  default:
+    external:
+      name: poc-stack
+
+services:
+  openldap:
+    image: bitnami/openldap:2.5.12
+    hostname: openldap
+    ports:
+      - "1389:1389"
+      - "1636:1636"
+    restart: always
+    volumes:
+      - ./openldap_data:/bitnami/openldap
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD=Password09!
+      # - LDAP_USERS=user01,user02
+      # - LDAP_PASSWORDS=password1,password2

@@ -1,0 +1,23 @@
+version: "3.3"
+
+networks:
+  default:
+    external:
+      name: poc-stack
+
+services:
+  postgres:
+    image: postgres:13.7-alpine3.15
+    hostname: postgres
+    ports:
+      - "127.0.0.1:5431:5432"
+    restart: always
+    #volumes:
+    #  - ./data:/var/lib/postgresql/data
+    #  - type: tmpfs
+    #    target: /var/lib/postgresql/data/pg_stat_tmp
+    #    tmpfs:
+    #      size: 268435456
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Password09!

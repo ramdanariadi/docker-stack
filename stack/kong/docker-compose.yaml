@@ -1,0 +1,63 @@
+version: "3.3"
+networks:
+  default:
+    external:
+      name: poc-stack
+
+services:
+  kong:
+    image: kong:2.8.1-alpine
+    hostname: kong
+    expose:
+      - "8080"
+      - "8443"
+      - "8001"
+      - "8444"
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8443:8443"
+      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8444:8444"
+    restart: always
+    environment:
+      - TZ=Asia/Jakarta
+      - KONG_DATABASE=postgres
+      - KONG_PROXY_ACCESS_LOG=/dev/stdout
+      - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+      - KONG_PROXY_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_ERROR_LOG=/dev/stderr
+      - KONG_ADMIN_LISTEN=0.0.0.0:8001, 0.0.0.0:8444 ssl
+      - KONG_PROXY_LISTEN=0.0.0.0:8080, 0.0.0.0:8443 ssl
+      - KONG_PG_HOST=postgres
+      - KONG_PG_DATABASE=kong
+      - KONG_PG_USER=postgres
+      - KONG_PG_PASSWORD=Password09!
+      - KONG_SSL=off
+      - KONG_TRUSTED_IPS=0.0.0.0/0,::0
+      - KONG_REAL_IP_RECURSIVE=on
+      - KONG_REAL_IP_HEADER=X-Forwarded-For
+    depends_on:
+      - kong-migrations
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  kong-migrations:
+    image: kong:2.8.1-alpine
+    command: kong migrations bootstrap
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_HOST=postgres
+      - KONG_PG_DATABASE=kong
+      - KONG_PG_USER=postgres
+      - KONG_PG_PASSWORD=Password09!
+
+  konga:
+    image: pantsel/konga:0.14.7
+    restart: always
+    expose:
+      - "1337"
+    ports:
+      - "127.0.0.1:1337:1337"

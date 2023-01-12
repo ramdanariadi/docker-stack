@@ -1,0 +1,18 @@
+version: "3.3"
+
+networks:
+  default:
+      name: poc-stack
+
+services:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    hostname: kafka-ui
+    ports:
+      - "127.0.0.1:9000:8080"
+    expose:
+      - "9000"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=kafka:9092
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092

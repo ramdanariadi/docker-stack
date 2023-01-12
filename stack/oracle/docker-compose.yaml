@@ -1,0 +1,20 @@
+version: "3.3"
+
+networks:
+  default:
+    external:
+      name: poc-stack
+
+services:
+  oracle:
+    image: wnameless/oracle-xe-11g-r2
+    ports:
+      - 1521:1521
+    volumes:
+      - ./oradata:/opt/oracle/oradata
+      - ./setup:/opt/oracle/scripts/setup
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+      - ORACLE_SID=ORALFRDEV
+      - ORACLE_PDB=ORALFRDEVPDB
+      - ORACLE_PWD=LwB_27i5Wi8=1

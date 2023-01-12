@@ -1,0 +1,17 @@
+version: "3.3"
+
+networks:
+  default:
+      name: poc-stack
+
+services:
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    hostname: kafdrop
+    ports:
+      - "127.0.0.1:9000:9000"
+    expose:
+      - "9000"
+    restart: always
+    environment:
+      - KAFKA_BROKERCONNECT=kafka:9092
